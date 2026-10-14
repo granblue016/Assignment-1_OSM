@@ -4,5 +4,6 @@
 - Chạy Preview: `npm run preview`
 
 - Công nghệ sử dụng: Vite, Leaflet, JavaScript, CSS
-- Deadline : Trong sáng nay (ngày 14/10/2026)
+- Deadline BT1: Trong sáng nay (ngày 14/10/2026)
+- Deadline BT2: Trong chiều nay (ngày 14/10/2026)
 - GitHub: https://github.com/granblue016/Assignment-1_OSM
