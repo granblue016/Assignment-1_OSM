@@ -1,6 +1,6 @@
-Cách cài đặt (install dependencies): npm install
-Cách chạy project (dev): npm run dev 
-Công nghệ sử dụng:
-Vite: để khởi tạo dự án
-Leaflet: để hiển thị map
-Github https://github.com/granblue016/Assignment-1_OSM
+- Cách cài đặt: `npm install`
+- Cách chạy dev: `npm run dev`
+<!-- - Cách build: `npm run build` -->
+
+- Công nghệ sử dụng: Vite, Leaflet, JavaScript, CSS
+- GitHub: https://github.com/granblue016/Assignment-1_OSM
