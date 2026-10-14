@@ -11,7 +11,7 @@ L.Icon.Default.mergeOptions({
 });
 // -----------------------------------------------------------------
 
-const centerCoordinates = [10.7922, 106.7085];
+const centerCoordinates = [10.780074, 106.6876522];
 
 var map = L.map('map').setView(centerCoordinates, 16);
 
