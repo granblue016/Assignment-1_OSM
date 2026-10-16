@@ -73,7 +73,7 @@ var myOverLay = [
     defaultOn: false
   },
   {
-    url: 'http://localhost:8080/geoserver/tphcm_layer/wms',
+    url: 'https://eleven-ears-act.loca.lt/geoserver/tphcm_layer/wms',
     id: 'tphcm_layer:☕ Quán Cà Phê (Vùng)',
     name: '☕ Quán Cà Phê (Vùng)',
     defaultOn: false
@@ -114,7 +114,7 @@ layerControl.addOverlay(marker, 'Marker');
 // marker.addTo(map);
 
 // Sửa 'my_workspace' thành 'tphcm_layer' (hoặc đúng workspace thực tế trên GeoServer của bạn)
-var wfsUrl = 'http://localhost:8080/geoserver/tphcm_layer/ows?service=WFS&version=1.0.0&request=GetFeature&typename=tphcm_layer:cafe_q3_points&outputFormat=application/json';
+var wfsUrl = 'https://eleven-ears-act.loca.lt/geoserver/tphcm_layer/ows?service=WFS&version=1.0.0&request=GetFeature&typename=tphcm_layer:cafe_q3_points&outputFormat=application/json';
 
 fetch(wfsUrl)
   .then(response => {
@@ -151,7 +151,7 @@ fetch(wfsUrl)
 // ==========================================
 // 1. FETCH LỚP NHÀ SÁCH DẠNG ĐIỂM (Points)
 // ==========================================
-var bookstorePointsUrl = 'http://localhost:8080/geoserver/tphcm_layer/ows?service=WFS&version=1.0.0&request=GetFeature&typename=tphcm_layer:bookstore_q3_points&outputFormat=application/json';
+var bookstorePointsUrl = 'https://eleven-ears-act.loca.lt/geoserver/tphcm_layer/ows?service=WFS&version=1.0.0&request=GetFeature&typename=tphcm_layer:bookstore_q3_points&outputFormat=application/json';
 
 fetch(bookstorePointsUrl)
   .then(response => {
@@ -187,7 +187,7 @@ fetch(bookstorePointsUrl)
 // ==========================================
 // 2. FETCH LỚP NHÀ SÁCH DẠNG VÙNG (Polygon)
 // ==========================================
-var bookstorePolygonUrl = 'http://localhost:8080/geoserver/tphcm_layer/ows?service=WFS&version=1.0.0&request=GetFeature&typename=tphcm_layer:bookstore_q3_polygon&outputFormat=application/json';
+var bookstorePolygonUrl = 'https://eleven-ears-act.loca.lt/geoserver/tphcm_layer/ows?service=WFS&version=1.0.0&request=GetFeature&typename=tphcm_layer:bookstore_q3_polygon&outputFormat=application/json';
 
 fetch(bookstorePolygonUrl)
   .then(response => {
@@ -220,7 +220,7 @@ fetch(bookstorePolygonUrl)
 // ==========================================
 // 1. FETCH LỚP CÔNG VIÊN DẠNG ĐIỂM (Points)
 // ==========================================
-var parkPointsUrl = 'http://localhost:8080/geoserver/tphcm_layer/ows?service=WFS&version=1.0.0&request=GetFeature&typename=tphcm_layer:park_points&outputFormat=application/json';
+var parkPointsUrl = 'https://eleven-ears-act.loca.lt/geoserver/tphcm_layer/ows?service=WFS&version=1.0.0&request=GetFeature&typename=tphcm_layer:park_points&outputFormat=application/json';
 
 fetch(parkPointsUrl)
   .then(response => {
@@ -256,7 +256,7 @@ fetch(parkPointsUrl)
 // ==========================================
 // 2. FETCH LỚP CÔNG VIÊN DẠNG VÙNG (Polygon)
 // ==========================================
-var parkPolygonUrl = 'http://localhost:8080/geoserver/tphcm_layer/ows?service=WFS&version=1.0.0&request=GetFeature&typename=tphcm_layer:park_polygon&outputFormat=application/json';
+var parkPolygonUrl = 'https://eleven-ears-act.loca.lt/geoserver/tphcm_layer/ows?service=WFS&version=1.0.0&request=GetFeature&typename=tphcm_layer:park_polygon&outputFormat=application/json';
 
 fetch(parkPolygonUrl)
   .then(response => {
@@ -289,7 +289,7 @@ fetch(parkPolygonUrl)
 // ==========================================
 // 1. FETCH LỚP Y TẾ DẠNG ĐIỂM (Points)
 // ==========================================
-var hospitalPointsUrl = 'http://localhost:8080/geoserver/tphcm_layer/ows?service=WFS&version=1.0.0&request=GetFeature&typename=tphcm_layer:hospital_points&outputFormat=application/json';
+var hospitalPointsUrl = 'https://eleven-ears-act.loca.lt/geoserver/tphcm_layer/ows?service=WFS&version=1.0.0&request=GetFeature&typename=tphcm_layer:hospital_points&outputFormat=application/json';
 
 fetch(hospitalPointsUrl)
   .then(response => {
@@ -326,7 +326,7 @@ fetch(hospitalPointsUrl)
 // ==========================================
 // 2. FETCH LỚP Y TẾ DẠNG VÙNG (Polygon - Bệnh viện lớn)
 // ==========================================
-var hospitalPolygonUrl = 'http://localhost:8080/geoserver/tphcm_layer/ows?service=WFS&version=1.0.0&request=GetFeature&typename=tphcm_layer:hospital_polygon&outputFormat=application/json';
+var hospitalPolygonUrl = 'https://eleven-ears-act.loca.lt/geoserver/tphcm_layer/ows?service=WFS&version=1.0.0&request=GetFeature&typename=tphcm_layer:hospital_polygon&outputFormat=application/json';
 
 fetch(hospitalPolygonUrl)
   .then(response => {
@@ -360,7 +360,7 @@ fetch(hospitalPolygonUrl)
 // ==========================================
 // 1. FETCH LỚP TRẠM XE BUÝT DẠNG ĐIỂM (Points) - Mặc định tắt
 // ==========================================
-var busPointsUrl = 'http://localhost:8080/geoserver/tphcm_layer/ows?service=WFS&version=1.0.0&request=GetFeature&typename=tphcm_layer:bus_points&outputFormat=application/json';
+var busPointsUrl = 'https://eleven-ears-act.loca.lt/geoserver/tphcm_layer/ows?service=WFS&version=1.0.0&request=GetFeature&typename=tphcm_layer:bus_points&outputFormat=application/json';
 
 fetch(busPointsUrl)
     .then(response => {
@@ -396,7 +396,7 @@ fetch(busPointsUrl)
 // ==========================================
 // 2. FETCH LỚP BẾN XE BUÝT DẠNG VÙNG (Polygon) - Mặc định tắt
 // ==========================================
-var busPolygonUrl = 'http://localhost:8080/geoserver/tphcm_layer/ows?service=WFS&version=1.0.0&request=GetFeature&typename=tphcm_layer:bus_polygon&outputFormat=application/json';
+var busPolygonUrl = 'https://eleven-ears-act.loca.lt/geoserver/tphcm_layer/ows?service=WFS&version=1.0.0&request=GetFeature&typename=tphcm_layer:bus_polygon&outputFormat=application/json';
 
 fetch(busPolygonUrl)
     .then(response => {
