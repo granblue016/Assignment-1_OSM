@@ -12,26 +12,38 @@ L.Icon.Default.mergeOptions({
 
 const centerCoordinates = [10.780074, 106.6876522];
 
-// 1. Khai báo các lớp bản đồ nền
-var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+
+const baseLayerData = [
+  {
+    name: 'OpenStreetMap',
+    layer: L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 19,
   attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-});
+}),
+    iconUrl: './public/images.jpg',
+    defaultOn: true
+  },
+  {
+    name: 'Vệ tinh',
+    layer: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 19,
+      attribution: 'Tiles &copy; Esri'
+    }),
+    iconUrl: './public/images1.png',
+    defaultOn: false
+  }
+];
+const basemapContainer = document.getElementById('basemap-container');
 
-var satelliteBasemap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-  maxZoom: 19,
-  attribution: 'Tiles &copy; Esri'
-});
 
-// 2. Khởi tạo bản đồ với lớp mặc định là osm
+
+let currentLayer = baseLayerData.find(item => item.defaultOn).layer;
+
 var map = L.map('map', {
   center: centerCoordinates,
   zoom: 8,
-  layers: [osm]
+  layers: currentLayer
 });
-
-// Khai báo biến lưu layer hiện tại (QUAN TRỌNG: để không bị lỗi undefined)
-let currentLayer = osm;
 
 // Thêm Marker mặc định
 var marker = L.marker(centerCoordinates)
@@ -40,96 +52,6 @@ var marker = L.marker(centerCoordinates)
 
 // 3. Mảng dữ liệu lớp phủ (Overlays)
 var myOverLay = [
-  // {
-  //   url: 'https://geodata-stnmt.tphcm.gov.vn/geoserver/khituong_thuyvan_2024/wms',
-  //   id: 'khituong_thuyvan_2024:diemquantrackhituong',
-  //   name: 'DiemQuanTracKhiTuong',
-  //   defaultOn: false,
-  //   iconUrl: './1.jpg'
-  // },
-  // {
-  //   url: 'https://geodata-stnmt.tphcm.gov.vn/geoserver/khituong_thuyvan_2024/wms',
-  //   id: 'khituong_thuyvan_2024:diemquantracthuyvan',
-  //   name: 'DiemQuanTracThuyVan',
-  //   defaultOn: false,
-  //   iconUrl: './2.png'
-  // },
-  // {
-  //   url: 'https://geodata-stnmt.tphcm.gov.vn/geoserver/dulieunen/wms',
-  //   id: 'dulieunen:caylaunam',
-  //   name: 'Cây lâu năm',
-  //   defaultOn: false,
-  //   iconUrl: './3.jpg'
-  // },
-  // {
-  //   url: 'https://geodata-stnmt.tphcm.gov.vn/geoserver/dulieunen/wms',
-  //   id: 'dulieunen:bematcongtrinh',
-  //   name: 'Bề mặt công trình',
-  //   defaultOn: false,
-  //   iconUrl: './4.png'
-  // },
-  // {
-  //   url: 'https://geodata-stnmt.tphcm.gov.vn/geoserver/dulieunen/wms',
-  //   id: 'dulieunen:bematkhudancu',
-  //   name: 'Bề mặt khu dân cư',
-  //   defaultOn: false,
-  //   iconUrl: './5.png'
-  // },
-  /// --- Các lớp của locahost
-  // {
-  //   url: 'http://localhost:8080/geoserver/tphcm_layer/wms',
-  //   id: 'tphcm_layer:cafe_q3_points',
-  //   name: '☕ Quán Cà Phê (Điểm)',
-  //   defaultOn: false
-  // },
-  // {
-  //   url: 'http://localhost:8080/geoserver/tphcm_layer/wms',
-  //   id: 'tphcm_layer:bookstore_q3_points',
-  //   name: '📚 Nhà Sách (Điểm)',
-  //   defaultOn: false
-  // },
-  // {
-  //   url: 'http://localhost:8080/geoserver/tphcm_layer/wms',
-  //   id: 'tphcm_layer:bookstore_q3_polygon',
-  //   name: '🏢 Nhà Sách (Vùng)',
-  //   defaultOn: false
-  // },
-  // {
-  //   url: 'http://localhost:8080/geoserver/tphcm_layer/wms',
-  //   id: 'tphcm_layer:park_points',
-  //   name: '🌳 Công Viên (Điểm)',
-  //   defaultOn: false
-  // },
-  // {
-  //   url: 'http://localhost:8080/geoserver/tphcm_layer/wms',
-  //   id: 'tphcm_layer:park_polygon',
-  //   name: '🏞️ Công Viên (Vùng)',
-  //   defaultOn: false
-  // },
-  // {
-  //   url: 'http://localhost:8080/geoserver/tphcm_layer/wms',
-  //   id: 'tphcm_layer:hospital_points',
-  //   name: '🏥 Cơ Sở Y Tế (Điểm)',
-  //   defaultOn: false
-  // },
-  // {
-  //   url: 'http://localhost:8080/geoserver/tphcm_layer/wms',
-  //   id: 'tphcm_layer:hospital_polygon',
-  //   name: '🏥 Bệnh Viện (Vùng)',
-  //   defaultOn: false
-  // },
-  // {
-  //   url: 'http://localhost:8080/geoserver/tphcm_layer/wms',
-  //   id: 'tphcm_layer:bus_points',
-  //   name: '🚌 Trạm Xe Buýt (Điểm)',
-  //   defaultOn: false
-  // },
-  // {
-  //   url: 'http://localhost:8080/geoserver/tphcm_layer/wms',
-  //   id: 'tphcm_layer:bus_polygon',
-  //   name: '🚏 Bến Xe Buýt (Vùng)',
-  //   defaultOn: false
-  // },
   {
     url: 'https://geoserver.opendevelopmentmekong.net/geoserver/ODVietnam/wms',
     id: '	ODVietnam:Khu bao ton',
@@ -167,6 +89,32 @@ var myOverLay = [
   },
 ];
 
+baseLayerData.forEach((item, index) => {
+  const div = document.createElement('div');
+  div.className = `flex items-center gap-2 p-1 cursor-pointer rounded hover:bg-gray-50 
+    ${item.defaultOn ? 'bg-blue-50/50 border-2 border-blue-500' : 'border-2 border-transparent'}`;
+  div.innerHTML = `<img id="img-${index}" src="${item.iconUrl}"
+        class="w-7 h-7 rounded border-2 border-transparent object-cover" />
+      <span class="font-medium text-gray-700">${item.name}</span>`
+
+  basemapContainer.appendChild(div);
+
+  div.addEventListener('click', () => {
+    map.removeLayer(currentLayer);
+    currentLayer = item.layer;
+    currentLayer.addTo(map);
+
+    currentLayer.bringToBack();
+
+
+    document.querySelectorAll('#basemap-container > div').forEach(el => {
+      el.className = "flex items-center gap-2 p-1 cursor-pointer rounded hover:bg-gray-50 border-2 border-transparent";
+    });
+    div.className = "flex items-center gap-2 p-1 cursor-pointer rounded hover:bg-gray-50 border-2 border-blue-500 bg-blue-50/50";
+  });
+});
+
+
 // 4. Render danh sách lớp phủ tự động ra HTML
 const overlayContainer = document.getElementById('overlay-container');
 myOverLay.forEach((item, index) => {
@@ -175,7 +123,7 @@ myOverLay.forEach((item, index) => {
     format: 'image/png',
     transparent: true,
     version: '1.1.0',
-    attribution: 'Sở TN&MT TP.HCM'
+    attribution: 'Mekong Open Development',
   });
 
   if (item.defaultOn) {
@@ -200,33 +148,4 @@ myOverLay.forEach((item, index) => {
       map.removeLayer(wmsLayer);
     }
   });
-});
-
-// 5. Xử lý sự kiện chuyển đổi bản đồ nền (Đặt ở ngoài vòng lặp)
-const cardOsm = document.getElementById('card-osm');
-const cardSatellite = document.getElementById('card-satellite');
-const imgOsm = document.getElementById('img-osm');
-const imgSatellite = document.getElementById('img-satellite');
-
-cardOsm.addEventListener('click', () => {
-  map.removeLayer(currentLayer);
-  currentLayer = osm;
-  currentLayer.addTo(map);
-
-  currentLayer.bringToBack(); // Đảm bảo lớp nền OSM được đưa xuống dưới cùng
-
-  imgOsm.className = 'w-7 h-7 rounded border-2 border-blue-500 object-cover';
-  imgSatellite.className = 'w-7 h-7 rounded border-2 border-transparent object-cover';
-});
-
-cardSatellite.addEventListener('click', () => {
-  map.removeLayer(currentLayer);
-  currentLayer = satelliteBasemap;
-  currentLayer.addTo(map);
-
-  currentLayer.bringToBack(); // Đảm bảo lớp nền Vệ tinh được đưa xuống dưới cùng
-  imgSatellite.className = 'w-7 h-7 rounded border-2 border-green-500 object-cover';
-  imgOsm.className = 'w-7 h-7 rounded border-2 border-transparent object-cover';
-
-  
 });

@@ -14,28 +14,24 @@
 
 <body>
   <div id="map"></div>
-  <div class="absolute top-4 right-4 z-[1000] bg-white p-2 rounded shadow-md border text-xs">
-    <div class="font-bold mb-1.5 text-gray-500">Bản đồ nền</div>
+  <div class="absolute top-4 right-4 z-[1000] group bg-white p-2 rounded shadow-md border text-xs">
 
-    <!-- OSM -->
-    <div id="card-osm" class="flex items-center gap-2 p-1 cursor-pointer rounded hover:bg-gray-50">
-      <img id="img-osm" src="./public/images.jpg" class="w-7 h-7 rounded border-2 border-blue-500 object-cover" />
-      <span class="font-medium text-gray-700">OpenStreetMap</span>
+    <div
+      class="bg-white px-3 py-2 rounded-lg shadow-md border text-xs font-semibold cursor-pointer flex items-center gap-1 hover:bg-gray-50">
+      🗺️ Lớp bản đồ (Rê chuột để xem)
     </div>
 
-    <!-- Vệ tinh -->
-    <div id="card-satellite" class="flex items-center gap-2 p-1 cursor-pointer rounded hover:bg-gray-50">
-      <img id="img-satellite" src="./public/images1.png"
-        class="w-7 h-7 rounded border-2 border-transparent object-cover" />
-      <span class="font-medium text-gray-700">Vệ tinh</span>
-    </div>
+    <div
+      class="absolute right-0 mt-2 bg-white rounded-xl shadow-2xl p-4 border border-gray-100 hidden group-hover:block transition-all duration-300 text-xs">
+      <div class="font-bold mb-1.5 text-gray-500">Bản đồ nền</div>
 
-    <div class="border-t border-gray-400 pt-1.5">
-      <div class="font-bold mb-1 text-gray-500">
-        Lớp phủ
-      </div>
-      <div id="overlay-container" class="flex flex-col gap-1"></div>
+      <div id="basemap-container" class="flex flex-col gap-1"></div>
 
+      <div class="border-t border-gray-400 pt-1.5 mt-2">
+        <div class="font-bold mb-1 text-gray-500">
+          Lớp phủ
+        </div>
+        <div id="overlay-container" class="flex flex-col gap-1"></div>
     </div>
 
   </div>
