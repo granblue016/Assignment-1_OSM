@@ -45,35 +45,35 @@ var myOverLay = [
     id: 'khituong_thuyvan_2024:diemquantrackhituong',
     name: 'DiemQuanTracKhiTuong',
     defaultOn: true,
-    iconUrl: './public/1.jpg'
+    iconUrl: './1.jpg'
   },
   {
     url: 'https://geodata-stnmt.tphcm.gov.vn/geoserver/khituong_thuyvan_2024/wms',
     id: 'khituong_thuyvan_2024:diemquantracthuyvan',
     name: 'DiemQuanTracThuyVan',
     defaultOn: false,
-    iconUrl: './public/2.png'
+    iconUrl: './2.png'
   },
   {
     url: 'https://geodata-stnmt.tphcm.gov.vn/geoserver/dulieunen/wms',
     id: 'dulieunen:caylaunam',
     name: 'Cây lâu năm',
     defaultOn: false,
-    iconUrl: './public/3.jpg'
+    iconUrl: './3.jpg'
   },
   {
     url: 'https://geodata-stnmt.tphcm.gov.vn/geoserver/dulieunen/wms',
     id: 'dulieunen:bematcongtrinh',
     name: 'Bề mặt công trình',
     defaultOn: false,
-    iconUrl: './public/4.png'
+    iconUrl: './4.png'
   },
   {
     url: 'https://geodata-stnmt.tphcm.gov.vn/geoserver/dulieunen/wms',
     id: 'dulieunen:bematkhudancu',
     name: 'Bề mặt khu dân cư',
     defaultOn: false,
-    iconUrl: './public/5.png'
+    iconUrl: './5.png'
   },
   /// --- Các lớp của locahost
   // {
