@@ -1,19 +1,45 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>osm</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-     crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-     crossorigin=""></script>
-  </head>
-  <body>
-     <div id="map"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>osm</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+</head>
+
+<body>
+  <div id="map"></div>
+  <div class="absolute top-4 right-4 z-[1000] bg-white p-2 rounded shadow-md border text-xs">
+    <div class="font-bold mb-1.5 text-gray-500">Bản đồ nền</div>
+
+    <!-- OSM -->
+    <div id="card-osm" class="flex items-center gap-2 p-1 cursor-pointer rounded hover:bg-gray-50">
+      <img id="img-osm" src="./public/images.jpg" class="w-7 h-7 rounded border-2 border-blue-500 object-cover" />
+      <span class="font-medium text-gray-700">OpenStreetMap</span>
+    </div>
+
+    <!-- Vệ tinh -->
+    <div id="card-satellite" class="flex items-center gap-2 p-1 cursor-pointer rounded hover:bg-gray-50">
+      <img id="img-satellite" src="./public/images1.png"
+        class="w-7 h-7 rounded border-2 border-transparent object-cover" />
+      <span class="font-medium text-gray-700">Vệ tinh</span>
+    </div>
+
+    <div class="border-t border-gray-400 pt-1.5">
+      <div class="font-bold mb-1 text-gray-500">
+        Lớp phủ
+      </div>
+      <div id="overlay-container" class="flex flex-col gap-1"></div>
+
+    </div>
+
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+
 </html>
