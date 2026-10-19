@@ -14,15 +14,13 @@
 
 <body>
   <div id="map"></div>
-  <div class="absolute top-4 right-4 z-[1000] group bg-white p-2 rounded shadow-md border text-xs">
+  <div class="w-64 absolute top-4 right-4 z-[1000] bg-white p-2 rounded shadow-md border text-xs">
 
-    <div
+    <!-- <div
       class="bg-white px-3 py-2 rounded-lg shadow-md border text-xs font-semibold cursor-pointer flex items-center gap-1 hover:bg-gray-50">
       🗺️ Lớp bản đồ (Rê chuột để xem)
-    </div>
+    </div> -->
 
-    <div
-      class="absolute right-0 mt-2 bg-white rounded-xl shadow-2xl p-4 border border-gray-100 hidden group-hover:block transition-all duration-300 text-xs">
       <div class="font-bold mb-1.5 text-gray-500">Bản đồ nền</div>
 
       <div id="basemap-container" class="flex flex-col gap-1"></div>
@@ -32,7 +30,6 @@
           Lớp phủ
         </div>
         <div id="overlay-container" class="flex flex-col gap-1"></div>
-    </div>
 
   </div>
   <script type="module" src="/src/main.js"></script>

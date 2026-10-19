@@ -20,7 +20,7 @@ const baseLayerData = [
   maxZoom: 19,
   attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }),
-    iconUrl: './images.jpg',
+    iconUrl: 'https://tile.openstreetmap.org/12/3262/1925.png',
     defaultOn: true
   },
   {
@@ -29,7 +29,7 @@ const baseLayerData = [
       maxZoom: 19,
       attribution: 'Tiles &copy; Esri'
     }),
-    iconUrl: './images1.png',
+    iconUrl: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/12/1925/3262.png',
     defaultOn: false
   }
 ];
@@ -94,7 +94,7 @@ baseLayerData.forEach((item, index) => {
   div.className = `flex items-center gap-2 p-1 cursor-pointer rounded hover:bg-gray-50 
     ${item.defaultOn ? 'bg-blue-50/50 border-2 border-blue-500' : 'border-2 border-transparent'}`;
   div.innerHTML = `<img id="img-${index}" src="${item.iconUrl}"
-        class="w-7 h-7 rounded border-2 border-transparent object-cover" />
+        class="w-10 h-10 rounded border-2 border-transparent object-cover" />
       <span class="font-medium text-gray-700">${item.name}</span>`
 
   basemapContainer.appendChild(div);
