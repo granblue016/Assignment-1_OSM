@@ -26,7 +26,7 @@ var satelliteBasemap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/
 // 2. Khởi tạo bản đồ với lớp mặc định là osm
 var map = L.map('map', {
   center: centerCoordinates,
-  zoom: 13,
+  zoom: 8,
   layers: [osm]
 });
 
@@ -40,41 +40,41 @@ var marker = L.marker(centerCoordinates)
 
 // 3. Mảng dữ liệu lớp phủ (Overlays)
 var myOverLay = [
-  {
-    url: 'https://geodata-stnmt.tphcm.gov.vn/geoserver/khituong_thuyvan_2024/wms',
-    id: 'khituong_thuyvan_2024:diemquantrackhituong',
-    name: 'DiemQuanTracKhiTuong',
-    defaultOn: true,
-    iconUrl: './1.jpg'
-  },
-  {
-    url: 'https://geodata-stnmt.tphcm.gov.vn/geoserver/khituong_thuyvan_2024/wms',
-    id: 'khituong_thuyvan_2024:diemquantracthuyvan',
-    name: 'DiemQuanTracThuyVan',
-    defaultOn: false,
-    iconUrl: './2.png'
-  },
-  {
-    url: 'https://geodata-stnmt.tphcm.gov.vn/geoserver/dulieunen/wms',
-    id: 'dulieunen:caylaunam',
-    name: 'Cây lâu năm',
-    defaultOn: false,
-    iconUrl: './3.jpg'
-  },
-  {
-    url: 'https://geodata-stnmt.tphcm.gov.vn/geoserver/dulieunen/wms',
-    id: 'dulieunen:bematcongtrinh',
-    name: 'Bề mặt công trình',
-    defaultOn: false,
-    iconUrl: './4.png'
-  },
-  {
-    url: 'https://geodata-stnmt.tphcm.gov.vn/geoserver/dulieunen/wms',
-    id: 'dulieunen:bematkhudancu',
-    name: 'Bề mặt khu dân cư',
-    defaultOn: false,
-    iconUrl: './5.png'
-  },
+  // {
+  //   url: 'https://geodata-stnmt.tphcm.gov.vn/geoserver/khituong_thuyvan_2024/wms',
+  //   id: 'khituong_thuyvan_2024:diemquantrackhituong',
+  //   name: 'DiemQuanTracKhiTuong',
+  //   defaultOn: false,
+  //   iconUrl: './1.jpg'
+  // },
+  // {
+  //   url: 'https://geodata-stnmt.tphcm.gov.vn/geoserver/khituong_thuyvan_2024/wms',
+  //   id: 'khituong_thuyvan_2024:diemquantracthuyvan',
+  //   name: 'DiemQuanTracThuyVan',
+  //   defaultOn: false,
+  //   iconUrl: './2.png'
+  // },
+  // {
+  //   url: 'https://geodata-stnmt.tphcm.gov.vn/geoserver/dulieunen/wms',
+  //   id: 'dulieunen:caylaunam',
+  //   name: 'Cây lâu năm',
+  //   defaultOn: false,
+  //   iconUrl: './3.jpg'
+  // },
+  // {
+  //   url: 'https://geodata-stnmt.tphcm.gov.vn/geoserver/dulieunen/wms',
+  //   id: 'dulieunen:bematcongtrinh',
+  //   name: 'Bề mặt công trình',
+  //   defaultOn: false,
+  //   iconUrl: './4.png'
+  // },
+  // {
+  //   url: 'https://geodata-stnmt.tphcm.gov.vn/geoserver/dulieunen/wms',
+  //   id: 'dulieunen:bematkhudancu',
+  //   name: 'Bề mặt khu dân cư',
+  //   defaultOn: false,
+  //   iconUrl: './5.png'
+  // },
   /// --- Các lớp của locahost
   // {
   //   url: 'http://localhost:8080/geoserver/tphcm_layer/wms',
@@ -124,12 +124,47 @@ var myOverLay = [
   //   name: '🚌 Trạm Xe Buýt (Điểm)',
   //   defaultOn: false
   // },
+  // {
+  //   url: 'http://localhost:8080/geoserver/tphcm_layer/wms',
+  //   id: 'tphcm_layer:bus_polygon',
+  //   name: '🚏 Bến Xe Buýt (Vùng)',
+  //   defaultOn: false
+  // },
   {
-    url: 'http://localhost:8080/geoserver/tphcm_layer/wms',
-    id: 'tphcm_layer:bus_polygon',
-    name: '🚏 Bến Xe Buýt (Vùng)',
-    defaultOn: false
-  }
+    url: 'https://geoserver.opendevelopmentmekong.net/geoserver/ODVietnam/wms',
+    id: '	ODVietnam:Khu bao ton',
+    name: '	Khu bảo tồn quốc gia Việt Nam',
+    defaultOn: true,
+    iconUrl: './1.jpg'
+  },
+  {
+    url: 'https://geoserver.opendevelopmentmekong.net/geoserver/ODVietnam/wms',
+    id: '	ODVietnam:Flood_frequency-contour',
+    name: '	Tuần suât lũ lụt',
+    defaultOn: false,
+    iconUrl: './2.jpg'
+  },
+  {
+    url: 'https://geoserver.opendevelopmentmekong.net/geoserver/ODVietnam/wms',
+    id: 'ODVietnam:10453931-345b-40fb-adc0-35eca5831381',
+    name: 'Covid-19',
+    defaultOn: false,
+    iconUrl: './3.png'
+  },
+  {
+    url: 'https://geoserver.opendevelopmentmekong.net/geoserver/ODVietnam/wms',
+    id: 'ODVietnam:World Heritage Site of Vietnam (V.vietnamese)',
+    name: 'Danh sách di sản thế giới tại Việt Nam',
+    defaultOn: false,
+    iconUrl: './4.webp'
+  },
+  {
+    url: 'https://geoserver.opendevelopmentmekong.net/geoserver/ODVietnam/wms',
+    id: 'ODVietnam:World_bank_aid_vn',
+    name: '	Các dự án hộ trợ của ngân hàng thế giới tại Việt Nam',
+    defaultOn: false,
+    iconUrl: './5.png'
+  },
 ];
 
 // 4. Render danh sách lớp phủ tự động ra HTML
