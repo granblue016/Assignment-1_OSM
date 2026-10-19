@@ -213,6 +213,8 @@ cardOsm.addEventListener('click', () => {
   currentLayer = osm;
   currentLayer.addTo(map);
 
+  currentLayer.bringToBack(); // Đảm bảo lớp nền OSM được đưa xuống dưới cùng
+
   imgOsm.className = 'w-7 h-7 rounded border-2 border-blue-500 object-cover';
   imgSatellite.className = 'w-7 h-7 rounded border-2 border-transparent object-cover';
 });
@@ -222,6 +224,9 @@ cardSatellite.addEventListener('click', () => {
   currentLayer = satelliteBasemap;
   currentLayer.addTo(map);
 
+  currentLayer.bringToBack(); // Đảm bảo lớp nền Vệ tinh được đưa xuống dưới cùng
   imgSatellite.className = 'w-7 h-7 rounded border-2 border-green-500 object-cover';
   imgOsm.className = 'w-7 h-7 rounded border-2 border-transparent object-cover';
+
+  
 });
