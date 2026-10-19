@@ -20,7 +20,7 @@ const baseLayerData = [
   maxZoom: 19,
   attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }),
-    iconUrl: './public/images.jpg',
+    iconUrl: './images.jpg',
     defaultOn: true
   },
   {
@@ -29,7 +29,7 @@ const baseLayerData = [
       maxZoom: 19,
       attribution: 'Tiles &copy; Esri'
     }),
-    iconUrl: './public/images1.png',
+    iconUrl: './images1.png',
     defaultOn: false
   }
 ];
