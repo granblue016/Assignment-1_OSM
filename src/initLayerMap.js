@@ -18,7 +18,7 @@ export function initLayerSwitcherMap(options = {}) {
     zoom = 8,
     markerInfo = {
       coords: [10.780074, 106.6876522],
-      popupText: 'Trường Đại học Sài Gòn - 273 Điện Biên Phủ'
+      popupText: 'Trung tâm Khoa học và Công nghệ - 273 Điện Biên Phủ'
     },
     baseLayerData = [],
     myOverLay = []
