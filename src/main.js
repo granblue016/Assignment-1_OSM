@@ -7,7 +7,7 @@ import { initLayerSwitcherMap } from './initLayerMap.js';
 async function loadMapConfig() {
   try {
     // 1. Trỏ chính xác port 5173 (port mà Admin SvelteKit đang chạy) + timestamp chống cache
-    const response = await fetch('http://localhost:4173/api/config?t=' + Date.now());
+    const response = await fetch('https://assignment-2-map-configuration-page.netlify.app/api/config?t=' + Date.now());
       
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);

@@ -6,5 +6,5 @@
 - Công nghệ sử dụng: Vite, Leaflet, JavaScript, CSS
 - Deadline BT1: Trong sáng nay (ngày 14/10/2026)
 - Deadline BT2: Trong chiều nay (ngày 14/10/2026)
-- Deadline BT2: 12h trưa (ngày 19/10/2026)
+- Deadline BT3: 12h trưa (ngày 19/10/2026)
 - GitHub: https://github.com/granblue016/Assignment-1_OSM
