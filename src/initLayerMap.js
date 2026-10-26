@@ -41,7 +41,6 @@ export function initLayerSwitcherMap(options = {}) {
   // 2. TỰ ĐỘNG DỰNG KHUNG HTML CHO MENU ĐIỀU KHIỂN
   const controlParent = document.getElementById(controlPanelId);
   if (controlParent) {
-    // Tự sinh cấu trúc HTML bên trong thẻ cha
     controlParent.innerHTML = `
       <div class="font-bold mb-1.5 text-gray-500">Bản đồ nền</div>
       <div id="basemap-container" class="flex flex-col gap-1"></div>
@@ -60,62 +59,58 @@ export function initLayerSwitcherMap(options = {}) {
 
   // 3. Render Lớp Nền (Base Layers)
   if (basemapContainer) {
-  // Làm sạch container trước khi render để tránh bị nhân đôi DOM nếu hàm bị gọi nhiều lần
-  basemapContainer.innerHTML = '';
+    basemapContainer.innerHTML = '';
 
-  baseLayerData.forEach((item, index) => {
-    const div = document.createElement('div');
-    
-    // Kiểm tra trạng thái kích hoạt mặc định
-    const isActive = item.defaultOn;
+    baseLayerData.forEach((item) => {
+      const div = document.createElement('div');
+      const isActive = item.defaultOn;
 
-    div.className = `flex items-center gap-2 p-1 cursor-pointer rounded hover:bg-gray-50 transition-all 
-      ${isActive ? 'bg-blue-50/50 border-2 border-blue-500' : 'border-2 border-transparent'}`;
-    
-    div.innerHTML = `
-      <img src="${item.iconUrl}" class="w-10 h-10 rounded border border-gray-200 object-cover flex-shrink-0" />
-      <span class="font-medium text-gray-700 text-xs">${item.name}</span>
-    `;
+      div.className = `flex items-center gap-2 p-1 cursor-pointer rounded hover:bg-gray-50 transition-all 
+        ${isActive ? 'bg-blue-50/50 border-2 border-blue-500' : 'border-2 border-transparent'}`;
+      
+      // 🛡️ DỰ PHÒNG: Hỗ trợ cả iconUrl lẫn thumbnailUrl từ API Bài 4
+      const imageSrc = item.iconUrl || item.thumbnailUrl || '';
 
-    basemapContainer.appendChild(div);
+      div.innerHTML = `
+        <img src="${imageSrc}" class="w-10 h-10 rounded border border-gray-200 object-cover flex-shrink-0" />
+        <span class="font-medium text-gray-700 text-xs">${item.name}</span>
+      `;
 
-    // Nếu layer này được cấu hình bật mặc định, add vào map ngay lúc đầu
-    if (isActive) {
-      currentLayer = item.layer;
-      currentLayer.addTo(map);
-      currentLayer.bringToBack();
-    }
+      basemapContainer.appendChild(div);
 
-    // Sự kiện khi người dùng click chọn bản đồ nền
-    div.addEventListener('click', () => {
-      // 1. Duyệt qua toàn bộ danh sách baseLayerData để gỡ bỏ TẤT CẢ các layer nền cũ khỏi map
-      // Thao tác này giúp triệt tiêu hoàn toàn lỗi chồng lớp hoặc sót layer cũ
-      baseLayerData.forEach(b => {
-        if (map.hasLayer(b.layer)) {
-          map.removeLayer(b.layer);
-        }
+      if (isActive) {
+        currentLayer = item.layer;
+        currentLayer.addTo(map);
+        currentLayer.bringToBack();
+      }
+
+      div.addEventListener('click', () => {
+        baseLayerData.forEach(b => {
+          if (map.hasLayer(b.layer)) {
+            map.removeLayer(b.layer);
+          }
+        });
+
+        currentLayer = item.layer;
+        currentLayer.addTo(map);
+        currentLayer.bringToBack();
+
+        basemapContainer.querySelectorAll('div').forEach(el => {
+          el.className = "flex items-center gap-2 p-1 cursor-pointer rounded hover:bg-gray-50 border-2 border-transparent transition-all";
+        });
+
+        div.className = "flex items-center gap-2 p-1 cursor-pointer rounded hover:bg-gray-50 border-2 border-blue-500 bg-blue-50/50 transition-all";
       });
-
-      // 2. Thêm layer mới được chọn vào map
-      currentLayer = item.layer;
-      currentLayer.addTo(map);
-      currentLayer.bringToBack();
-
-      // 3. Xóa sạch viền xanh (active) của tất cả các ô trong giao diện
-      basemapContainer.querySelectorAll('div').forEach(el => {
-        el.className = "flex items-center gap-2 p-1 cursor-pointer rounded hover:bg-gray-50 border-2 border-transparent transition-all";
-      });
-
-      // 4. Chỉ tô viền xanh duy nhất cho ô vừa được click
-      div.className = "flex items-center gap-2 p-1 cursor-pointer rounded hover:bg-gray-50 border-2 border-blue-500 bg-blue-50/50 transition-all";
     });
-  });
-}
-  // 4. Render Lớp Phủ (Overlays)
+  }
+
+  // 4. Render Lớp Phủ (Overlays) - ĐÃ ĐƯA VĂN BẢN/KHỐI NÀY NẰM BÊN TRONG HÀM
   if (overlayContainer) {
+    overlayContainer.innerHTML = ''; // Làm sạch tránh trùng lặp DOM
+
     myOverLay.forEach((item, index) => {
       const wmsLayer = L.tileLayer.wms(item.url, {
-        layers: item.id.trim(), // Xóa khoảng trắng thừa trong id
+        layers: item.id.trim(),
         format: 'image/png',
         transparent: true,
         version: '1.1.0',
@@ -147,5 +142,5 @@ export function initLayerSwitcherMap(options = {}) {
     });
   }
 
-  return map;
+  return map; // Dấu đóng ngoặc của hàm nằm ở đây là chính xác
 }

@@ -14,7 +14,7 @@ async function loadMapConfig() {
     const config = await response.json();
 
     // Đảm bảo chỉ có DUY NHẤT 1 baseLayer được active (phòng hờ dữ liệu cũ chưa kịp chuẩn hóa)
-    let firstActiveIndex = config.baseLayers.findIndex(item => item.active === true || item.active === 'true');
+    let firstActiveIndex = config.baseLayers.findIndex(item => item.active === true || item.active === 'true' || item.active === 1);
     if (firstActiveIndex === -1) firstActiveIndex = 0; // Nếu không có cái nào active, lấy cái đầu tiên
 
     initLayerSwitcherMap({
@@ -34,7 +34,7 @@ async function loadMapConfig() {
         url: item.wmsUrl,
         id: item.layers,
         name: item.name,
-        defaultOn: item.active === true || item.active === 'true',
+        defaultOn: item.active === true || item.active === 'true' || item.active === 1,
         iconUrl: item.iconUrl
       }))
     });
