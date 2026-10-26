@@ -6,7 +6,7 @@ import { initLayerSwitcherMap } from './initLayerMap.js';
 async function loadMapConfig() {
   try {
     const response = await fetch('https://assignment-2-map-configuration-page.netlify.app/api/config?t=' + Date.now());
-      
+    // const response = await fetch('http://localhost:4173/api/config?t=' + Date.now());
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
