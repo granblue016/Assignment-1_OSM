@@ -4,20 +4,46 @@ import L from 'leaflet';
 import './style.css';
 import { initLayerSwitcherMap } from './initLayerMap.js';
 
-async function loadMapConfig() {
+let activeMapInstance = null;
+const netlifyDomain = 'https://assignment3-thumbnails.netlify.app';
+
+// 1. Tải danh sách tất cả các bản đồ từ Backend Netlify để đưa vào Dropdown
+async function loadAvailableMaps(currentKey) {
   try {
-    // 🔥 Lấy mapKey động từ URL Query (Ví dụ: ?map=hanoi-map). Nếu không có thì mặc định là 'hcm-map'
-    const urlParams = new URLSearchParams(window.location.search);
-    const mapKey = urlParams.get('map') || 'hcm-map';
-
-    console.log(`Đang tải cấu hình cho bản đồ: ${mapKey}`);
-
-    // Gọi API lấy cấu hình từ Netlify Backend theo mapKey động
-    const response = await fetch(`https://assignment3-thumbnails.netlify.app/api/config/${mapKey}?t=` + Date.now());
+    const res = await fetch(`${netlifyDomain}/api/configs`);
+    const data = await res.json();
     
-    if (!response.ok) {
-      throw new Error(`Không tìm thấy cấu hình cho mapKey: "${mapKey}" (HTTP status: ${response.status})`);
+    const selector = document.getElementById('map-selector');
+    if (!selector) return;
+
+    // Khớp với mảng 'configs' trả về từ file +server.js của bạn
+    if (data.success && data.configs && data.configs.length > 0) {
+      selector.innerHTML = data.configs.map(m => `
+        <option value="${m.key}" ${m.key === currentKey ? 'selected' : ''}>${m.title || m.key}</option>
+      `).join('');
+
+      // Lắng nghe sự kiện khi người dùng chọn map khác trên dropdown
+      selector.onchange = (e) => {
+        const selectedKey = e.target.value;
+        const newUrl = `${window.location.pathname}?map=${selectedKey}`;
+        window.history.pushState({ map: selectedKey }, '', newUrl);
+        loadMapConfig(selectedKey);
+      };
+    } else {
+      selector.innerHTML = `<option value="${currentKey}">Mặc định (${currentKey})</option>`;
     }
+  } catch (error) {
+    console.error("Không thể tải danh sách map từ server:", error);
+  }
+}
+
+// 2. Tải cấu hình chi tiết của 1 bản đồ cụ thể và render Leaflet
+async function loadMapConfig(mapKey) {
+  try {
+    console.log(`Đang tải cấu hình bản đồ: ${mapKey}`);
+
+    const response = await fetch(`${netlifyDomain}/api/config/${mapKey}?t=` + Date.now());
+    if (!response.ok) throw new Error(`HTTP status: ${response.status}`);
 
     const config = await response.json();
 
@@ -26,9 +52,13 @@ async function loadMapConfig() {
     );
     if (firstActiveIndex === -1) firstActiveIndex = 0;
 
-    const netlifyDomain = 'https://assignment3-thumbnails.netlify.app';
+    // Dọn dẹp bản đồ cũ trước khi render bản đồ mới để tránh lỗi trùng lặp container
+    if (activeMapInstance) {
+      activeMapInstance.remove();
+      activeMapInstance = null;
+    }
 
-    initLayerSwitcherMap({
+    activeMapInstance = initLayerSwitcherMap({
       mapContainerId: 'map',
       basemapContainerId: 'basemap-container',
       overlayContainerId: 'overlay-container',
@@ -36,7 +66,6 @@ async function loadMapConfig() {
       zoom: config.zoom,
       baseLayerData: config.baseLayers.map((item, index) => {
         let thumbUrl = item.thumbnailUrl || item.iconUrl || '';
-        
         if (thumbUrl.startsWith('/')) {
           thumbUrl = netlifyDomain + thumbUrl;
         }
@@ -56,10 +85,18 @@ async function loadMapConfig() {
         iconUrl: item.iconUrl && item.iconUrl.startsWith('/') ? netlifyDomain + item.iconUrl : item.iconUrl
       }))
     });
+
   } catch (error) {
-    console.error("Lỗi tải cấu hình động từ API:", error);
-    alert("Không thể tải bản đồ. Vui lòng kiểm tra lại khóa (mapKey) trên URL!");
+    console.error("Lỗi tải chi tiết bản đồ:", error);
+    alert(`Không thể tải bản đồ "${mapKey}".`);
   }
 }
 
-loadMapConfig();
+// 🚀 Khởi chạy hệ thống khi trang sẵn sàng
+document.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const initialMapKey = urlParams.get('map') || 'hcm-map';
+
+  loadAvailableMaps(initialMapKey);
+  loadMapConfig(initialMapKey);
+});

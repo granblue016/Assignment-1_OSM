@@ -1,3 +1,4 @@
+// initLayerMap.js
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import './style.css';
@@ -38,10 +39,17 @@ export function initLayerSwitcherMap(options = {}) {
     L.marker(markerInfo.coords).bindPopup(markerInfo.popupText).addTo(map);
   }
 
-  // 2. TỰ ĐỘNG DỰNG KHUNG HTML CHO MENU ĐIỀU KHIỂN
+  // 2. TỰ ĐỘNG DỰNG KHUNG HTML CHO MENU ĐIỀU KHIỂN & DROPDOWN CHỌN MAP
   const controlParent = document.getElementById(controlPanelId);
   if (controlParent) {
     controlParent.innerHTML = `
+      <div class="mb-3 pb-2 border-b border-gray-200">
+        <label for="map-selector" class="block font-bold mb-1 text-gray-700 text-xs">🌐 Chọn khu vực bản đồ:</label>
+        <select id="map-selector" class="w-full p-1.5 border border-gray-300 rounded text-xs bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
+          <option value="">Đang tải danh sách bản đồ...</option>
+        </select>
+      </div>
+
       <div class="font-bold mb-1.5 text-gray-500">Bản đồ nền</div>
       <div id="basemap-container" class="flex flex-col gap-1"></div>
 
@@ -68,7 +76,6 @@ export function initLayerSwitcherMap(options = {}) {
       div.className = `flex items-center gap-2 p-1 cursor-pointer rounded hover:bg-gray-50 transition-all 
         ${isActive ? 'bg-blue-50/50 border-2 border-blue-500' : 'border-2 border-transparent'}`;
       
-      // 🛡️ DỰ PHÒNG: Hỗ trợ cả iconUrl lẫn thumbnailUrl từ API Bài 4
       const imageSrc = item.iconUrl || item.thumbnailUrl || '';
 
       div.innerHTML = `
@@ -104,9 +111,9 @@ export function initLayerSwitcherMap(options = {}) {
     });
   }
 
-  // 4. Render Lớp Phủ (Overlays) - ĐÃ ĐƯA VĂN BẢN/KHỐI NÀY NẰM BÊN TRONG HÀM
+  // 4. Render Lớp Phủ (Overlays)
   if (overlayContainer) {
-    overlayContainer.innerHTML = ''; // Làm sạch tránh trùng lặp DOM
+    overlayContainer.innerHTML = '';
 
     myOverLay.forEach((item, index) => {
       const wmsLayer = L.tileLayer.wms(item.url, {
@@ -142,5 +149,5 @@ export function initLayerSwitcherMap(options = {}) {
     });
   }
 
-  return map; // Dấu đóng ngoặc của hàm nằm ở đây là chính xác
+  return map;
 }
