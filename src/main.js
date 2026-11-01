@@ -7,6 +7,7 @@ import { initLayerSwitcherMap } from './initLayerMap.js';
 async function loadMapConfig() {
   try {
     const mapKey = 'hcm-map';
+    // Gọi API lấy cấu hình từ Netlify Backend kèm query chống cache
     const response = await fetch(`https://assignment3-thumbnails.netlify.app/api/config/${mapKey}?t=` + Date.now());
     
     if (!response.ok) {
@@ -20,7 +21,7 @@ async function loadMapConfig() {
     );
     if (firstActiveIndex === -1) firstActiveIndex = 0;
 
-    // 🔥 Xử lý chuyển đổi đường dẫn thumbnail tương đối thành tuyệt đối trỏ về Netlify
+    // 🔥 Domain gốc của Netlify chứa API và kho lưu trữ Thumbnail
     const netlifyDomain = 'https://assignment3-thumbnails.netlify.app';
 
     initLayerSwitcherMap({
@@ -31,7 +32,8 @@ async function loadMapConfig() {
       zoom: config.zoom,
       baseLayerData: config.baseLayers.map((item, index) => {
         let thumbUrl = item.thumbnailUrl || item.iconUrl || '';
-        // Nếu là đường dẫn tương đối (bắt đầu bằng /), gắn domain Netlify vào phía trước
+        
+        // Nếu là đường dẫn tương đối (bắt đầu bằng dấu /), tự động ghép domain Netlify vào phía trước
         if (thumbUrl.startsWith('/')) {
           thumbUrl = netlifyDomain + thumbUrl;
         }
@@ -48,7 +50,7 @@ async function loadMapConfig() {
         id: item.layers,
         name: item.name,
         defaultOn: item.active === true || item.active === 'true' || item.active === 1,
-        // Nếu overlay iconUrl là đường dẫn tương đối, cũng gắn domain Netlify
+        // Xử lý tương tự cho icon của lớp phủ nếu là đường dẫn tương đối
         iconUrl: item.iconUrl && item.iconUrl.startsWith('/') ? netlifyDomain + item.iconUrl : item.iconUrl
       }))
     });
