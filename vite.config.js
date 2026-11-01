@@ -7,11 +7,11 @@ export default defineConfig({
   ],
   base: '/Assignment-1_OSM/',
   server: {
-    port: 5173,      
+    port: 4173,      
     strictPort: true 
   },
   preview: {          // <--- Thêm khối này để cố định port cho lệnh preview
-    port: 5173,       // Hoặc đổi thành port khác nếu 4173 bị chiếm
+    port: 4173,       // Hoặc đổi thành port khác nếu 4173 bị chiếm
     strictPort: true
   }
 });
