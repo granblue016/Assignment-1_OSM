@@ -16,7 +16,6 @@ async function loadAvailableMaps(currentKey) {
     const selector = document.getElementById('map-selector');
     if (!selector) return;
 
-    // Khớp với mảng 'configs' trả về từ file +server.js của bạn
     if (data.success && data.configs && data.configs.length > 0) {
       selector.innerHTML = data.configs.map(m => `
         <option value="${m.key}" ${m.key === currentKey ? 'selected' : ''}>${m.title || m.key}</option>
@@ -86,6 +85,9 @@ async function loadMapConfig(mapKey) {
       }))
     });
 
+    // 🔥 GỌI LẠI ĐÂY ĐỂ ĐIỀN DỮ LIỆU CHO DROPDOWN VÀ BIND LẠI SỰ KIỆN ONCHANGE SAU KHI KHUNG BỊ RE-RENDER
+    await loadAvailableMaps(mapKey);
+
   } catch (error) {
     console.error("Lỗi tải chi tiết bản đồ:", error);
     alert(`Không thể tải bản đồ "${mapKey}".`);
@@ -97,6 +99,5 @@ document.addEventListener('DOMContentLoaded', () => {
   const urlParams = new URLSearchParams(window.location.search);
   const initialMapKey = urlParams.get('map') || 'hcm-map';
 
-  loadAvailableMaps(initialMapKey);
   loadMapConfig(initialMapKey);
 });
