@@ -7,7 +7,7 @@ import { initLayerSwitcherMap } from './initLayerMap.js';
 let activeMapInstance = null;
 
 // 🔥 Trỏ thẳng về cổng 4174 nơi SvelteKit server đang chạy API
-const apiDomain = 'http://localhost:4174'; 
+const apiDomain = 'https://assignment-3-thumbnails-minio.netlify.app/'; 
 
 // 1. Tải danh sách tất cả các bản đồ từ SvelteKit Server
 async function loadAvailableMaps(currentKey) {
