@@ -5,12 +5,14 @@ import './style.css';
 import { initLayerSwitcherMap } from './initLayerMap.js';
 
 let activeMapInstance = null;
-const netlifyDomain = 'https://assignment3-thumbnails.netlify.app';
 
-// 1. Tải danh sách tất cả các bản đồ từ Backend Netlify để đưa vào Dropdown
+// 🔥 Trỏ thẳng về cổng 4174 nơi SvelteKit server đang chạy API
+const apiDomain = 'http://localhost:4174'; 
+
+// 1. Tải danh sách tất cả các bản đồ từ SvelteKit Server
 async function loadAvailableMaps(currentKey) {
   try {
-    const res = await fetch(`${netlifyDomain}/api/configs`);
+    const res = await fetch(`${apiDomain}/api/configs`);
     const data = await res.json();
     
     const selector = document.getElementById('map-selector');
@@ -21,7 +23,6 @@ async function loadAvailableMaps(currentKey) {
         <option value="${m.key}" ${m.key === currentKey ? 'selected' : ''}>${m.title || m.key}</option>
       `).join('');
 
-      // Lắng nghe sự kiện khi người dùng chọn map khác trên dropdown
       selector.onchange = (e) => {
         const selectedKey = e.target.value;
         const newUrl = `${window.location.pathname}?map=${selectedKey}`;
@@ -36,12 +37,12 @@ async function loadAvailableMaps(currentKey) {
   }
 }
 
-// 2. Tải cấu hình chi tiết của 1 bản đồ cụ thể và render Leaflet
+// 2. Tải cấu hình chi tiết của 1 bản đồ cụ thể
 async function loadMapConfig(mapKey) {
   try {
     console.log(`Đang tải cấu hình bản đồ: ${mapKey}`);
 
-    const response = await fetch(`${netlifyDomain}/api/config/${mapKey}?t=` + Date.now());
+    const response = await fetch(`${apiDomain}/api/config/${mapKey}?t=` + Date.now());
     if (!response.ok) throw new Error(`HTTP status: ${response.status}`);
 
     const config = await response.json();
@@ -51,7 +52,6 @@ async function loadMapConfig(mapKey) {
     );
     if (firstActiveIndex === -1) firstActiveIndex = 0;
 
-    // Dọn dẹp bản đồ cũ trước khi render bản đồ mới để tránh lỗi trùng lặp container
     if (activeMapInstance) {
       activeMapInstance.remove();
       activeMapInstance = null;
@@ -66,7 +66,7 @@ async function loadMapConfig(mapKey) {
       baseLayerData: config.baseLayers.map((item, index) => {
         let thumbUrl = item.thumbnailUrl || item.iconUrl || '';
         if (thumbUrl.startsWith('/')) {
-          thumbUrl = netlifyDomain + thumbUrl;
+          thumbUrl = apiDomain + thumbUrl;
         }
 
         return {
@@ -81,11 +81,10 @@ async function loadMapConfig(mapKey) {
         id: item.layers,
         name: item.name,
         defaultOn: item.active === true || item.active === 'true' || item.active === 1,
-        iconUrl: item.iconUrl && item.iconUrl.startsWith('/') ? netlifyDomain + item.iconUrl : item.iconUrl
+        iconUrl: item.iconUrl && item.iconUrl.startsWith('/') ? apiDomain + item.iconUrl : item.iconUrl
       }))
     });
 
-    // 🔥 GỌI LẠI ĐÂY ĐỂ ĐIỀN DỮ LIỆU CHO DROPDOWN VÀ BIND LẠI SỰ KIỆN ONCHANGE SAU KHI KHUNG BỊ RE-RENDER
     await loadAvailableMaps(mapKey);
 
   } catch (error) {
@@ -94,7 +93,6 @@ async function loadMapConfig(mapKey) {
   }
 }
 
-// 🚀 Khởi chạy hệ thống khi trang sẵn sàng
 document.addEventListener('DOMContentLoaded', () => {
   const urlParams = new URLSearchParams(window.location.search);
   const initialMapKey = urlParams.get('map') || 'hcm-map';
