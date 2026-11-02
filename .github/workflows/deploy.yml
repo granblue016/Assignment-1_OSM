@@ -3,7 +3,6 @@ name: Deploy Vite Site to GitHub Pages
 on:
   push:
     branches:
-      - bai2 # Tự động chạy mỗi khi push code lên nhánh bai2
       - bai3 # Tự động chạy mỗi khi push code lên nhánh bai3
 
 permissions:
