@@ -39,17 +39,10 @@ export function initLayerSwitcherMap(options = {}) {
     L.marker(markerInfo.coords).bindPopup(markerInfo.popupText).addTo(map);
   }
 
-  // 2. TỰ ĐỘNG DỰNG KHUNG HTML CHO MENU ĐIỀU KHIỂN & DROPDOWN CHỌN MAP
+  // 2. DỰNG KHUNG HTML CHO MENU ĐIỀU KHIỂN (Đã loại bỏ dropdown chọn khu vực)
   const controlParent = document.getElementById(controlPanelId);
   if (controlParent) {
     controlParent.innerHTML = `
-      <div class="mb-3 pb-2 border-b border-gray-200">
-        <label for="map-selector" class="block font-bold mb-1 text-gray-700 text-xs">🌐 Chọn khu vực bản đồ:</label>
-        <select id="map-selector" class="w-full p-1.5 border border-gray-300 rounded text-xs bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
-          <option value="">Đang tải danh sách bản đồ...</option>
-        </select>
-      </div>
-
       <div class="font-bold mb-1.5 text-gray-500">Bản đồ nền</div>
       <div id="basemap-container" class="flex flex-col gap-1"></div>
 

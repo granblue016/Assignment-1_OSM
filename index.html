@@ -10,33 +10,39 @@
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body>
-  <!-- Khung hiển thị bản đồ Leaflet -->
-  <div id="map" class="w-screen h-screen"></div>
+<body class="flex flex-col h-screen overflow-hidden m-0 font-sans bg-gray-100">
 
-  <!-- Bảng điều khiển nằm góc trên bên phải -->
-  <div id="map-control" class="w-64 absolute top-4 right-4 z-[1000] bg-white p-3 rounded-lg shadow-md border text-xs">
-    
-    <!-- Dropdown chọn khu vực bản đồ động -->
-    <div class="mb-3 pb-2 border-b border-gray-200">
-      <label for="map-selector" class="block font-bold mb-1 text-gray-700 text-xs">🌐 Chọn khu vực bản đồ:</label>
-      <select id="map-selector" class="w-full p-1.5 border border-gray-300 rounded text-xs bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
-        <option value="">Đang tải danh sách bản đồ...</option>
-      </select>
+  <!-- 1. HEADER CHÍNH (Thanh xanh đậm chứa Logo và Tên hệ thống theo yêu cầu của mentor) -->
+  <header class="bg-[#1b365d] text-white px-4 py-2.5 flex items-center shadow-md z-[1001]" style="background-color: #1b365d; min-height: 50px;">
+    <div class="flex items-center gap-3 w-full overflow-hidden">
+      <!-- Logo sẽ được tự động load từ config 'hcm-map' -->
+      <img id="map-logo" src="" alt="Logo" class="w-8 h-8 object-contain hidden bg-white rounded p-0.5 flex-shrink-0" />
+      <!-- Tên hệ thống sẽ được tự động load từ config 'hcm-map' -->
+      <h1 id="map-title" class="text-sm md:text-base font-bold tracking-wide truncate text-white m-0">Đang tải tên hệ thống...</h1>
     </div>
+  </header>
 
-    <!-- Bản đồ nền -->
-    <div class="font-bold mb-1.5 text-gray-500">Bản đồ nền</div>
-    <div id="basemap-container" class="flex flex-col gap-1"></div>
+  <!-- 2. KHU VỰC BẢN ĐỒ CHÍNH -->
+  <div class="relative flex-1 w-full h-full">
+    <!-- Khung hiển thị bản đồ Leaflet chiếm toàn bộ màn hình bên dưới header -->
+    <div id="map" class="w-full h-full"></div>
 
-    <!-- Lớp phủ -->
-    <div class="border-t border-gray-400 pt-1.5 mt-2">
-      <div class="font-bold mb-1 text-gray-500">Lớp phủ</div>
-      <div id="overlay-container" class="flex flex-col gap-1"></div>
+    <!-- Bảng điều khiển lớp nền & lớp phủ (Nằm nổi ở góc trên bên phải bản đồ) -->
+    <div id="map-control" class="w-64 absolute top-4 right-4 z-[1000] bg-white p-3 rounded-lg shadow-md border text-xs">
+      <!-- Bản đồ nền -->
+      <div class="font-bold mb-1.5 text-gray-500">Bản đồ nền</div>
+      <div id="basemap-container" class="flex flex-col gap-1"></div>
+
+      <!-- Lớp phủ -->
+      <div class="border-t border-gray-400 pt-1.5 mt-2">
+        <div class="font-bold mb-1 text-gray-500">Lớp phủ</div>
+        <div id="overlay-container" class="flex flex-col gap-1"></div>
+      </div>
     </div>
-
   </div>
 
   <script type="module" src="/src/main.js"></script>

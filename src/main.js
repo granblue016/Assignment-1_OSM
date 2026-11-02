@@ -6,39 +6,12 @@ import { initLayerSwitcherMap } from './initLayerMap.js';
 
 let activeMapInstance = null;
 
-// 🔥 Trỏ thẳng về cổng 4174 nơi SvelteKit server đang chạy API
+// Cấu hình domain của SvelteKit server (cổng 4174)
 const apiDomain = 'https://assignment-3-thumbnails-minio.netlify.app/'; 
 
-// 1. Tải danh sách tất cả các bản đồ từ SvelteKit Server
-async function loadAvailableMaps(currentKey) {
-  try {
-    const res = await fetch(`${apiDomain}/api/configs`);
-    const data = await res.json();
-    
-    const selector = document.getElementById('map-selector');
-    if (!selector) return;
-
-    if (data.success && data.configs && data.configs.length > 0) {
-      selector.innerHTML = data.configs.map(m => `
-        <option value="${m.key}" ${m.key === currentKey ? 'selected' : ''}>${m.title || m.key}</option>
-      `).join('');
-
-      selector.onchange = (e) => {
-        const selectedKey = e.target.value;
-        const newUrl = `${window.location.pathname}?map=${selectedKey}`;
-        window.history.pushState({ map: selectedKey }, '', newUrl);
-        loadMapConfig(selectedKey);
-      };
-    } else {
-      selector.innerHTML = `<option value="${currentKey}">Mặc định (${currentKey})</option>`;
-    }
-  } catch (error) {
-    console.error("Không thể tải danh sách map từ server:", error);
-  }
-}
-
-// 2. Tải cấu hình chi tiết của 1 bản đồ cụ thể
-async function loadMapConfig(mapKey) {
+// Tải cấu hình chi tiết của bản đồ cố định 'hcm-map' và render Leaflet
+async function loadMapConfig() {
+  const mapKey = 'hcm-map'; // Cố định key theo yêu cầu của mentor
   try {
     console.log(`Đang tải cấu hình bản đồ: ${mapKey}`);
 
@@ -47,16 +20,31 @@ async function loadMapConfig(mapKey) {
 
     const config = await response.json();
 
+    // 1. Hiển thị Tên bản đồ lên giao diện (tìm thẻ có id="map-title")
+    const titleElement = document.getElementById('map-title');
+    if (titleElement) {
+      titleElement.textContent = config.title || 'Bản đồ Thành phố Hồ Chí Minh';
+    }
+
+    // 2. Hiển thị Logo bản đồ lên giao diện (tìm thẻ có id="map-logo")
+    const logoElement = document.getElementById('map-logo');
+    if (logoElement && config.logoUrl) {
+      logoElement.src = config.logoUrl.startsWith('/') ? apiDomain + config.logoUrl : config.logoUrl;
+      logoElement.style.display = 'block';
+    }
+
     let firstActiveIndex = config.baseLayers.findIndex(
       item => item.active === true || item.active === 'true' || item.active === 1
     );
     if (firstActiveIndex === -1) firstActiveIndex = 0;
 
+    // Dọn dẹp bản đồ cũ trước khi render bản đồ mới để tránh lỗi container
     if (activeMapInstance) {
       activeMapInstance.remove();
       activeMapInstance = null;
     }
 
+    // 3. Khởi tạo bản đồ với các lớp nền và thumbnail từ hệ thống quản lý
     activeMapInstance = initLayerSwitcherMap({
       mapContainerId: 'map',
       basemapContainerId: 'basemap-container',
@@ -73,7 +61,7 @@ async function loadMapConfig(mapKey) {
           ...item,
           layer: L.tileLayer(item.layerUrl, { maxZoom: 19 }),
           defaultOn: index === firstActiveIndex,
-          iconUrl: thumbUrl
+          iconUrl: thumbUrl // Thumbnail lấy từ MinIO qua API quản lý
         };
       }),
       myOverLay: config.overlays.map(item => ({
@@ -85,17 +73,13 @@ async function loadMapConfig(mapKey) {
       }))
     });
 
-    await loadAvailableMaps(mapKey);
-
   } catch (error) {
     console.error("Lỗi tải chi tiết bản đồ:", error);
     alert(`Không thể tải bản đồ "${mapKey}".`);
   }
 }
 
+// 🚀 Khởi chạy hệ thống ngay khi trang sẵn sàng
 document.addEventListener('DOMContentLoaded', () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const initialMapKey = urlParams.get('map') || 'hcm-map';
-
-  loadMapConfig(initialMapKey);
+  loadMapConfig();
 });
