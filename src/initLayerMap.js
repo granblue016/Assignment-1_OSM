@@ -45,9 +45,9 @@ export function initLayerSwitcherMap(options = {}) {
 
   // initLayerMap.js
   // Đổi thành dynamic theo domain thực tế khi chạy trên trình duyệt
-  const apiDomain = typeof window !== 'undefined' ? window.location.origin : '';
+  // const apiDomain = typeof window !== 'undefined' ? window.location.origin : '';
+  const apiDomain = 'https://assigment4-bai6-icon.netlify.app/';
 
-  
   // 2. Dựng khung HTML cho Menu điều khiển & Nút Định vị
   const controlParent = document.getElementById(controlPanelId);
   if (controlParent) {
