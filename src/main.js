@@ -7,8 +7,11 @@ import { initLayerSwitcherMap } from './initLayerMap.js';
 let activeMapInstance = null;
 
 // Cấu hình domain của SvelteKit server (cổng 4174)
-const apiDomain = 'https://assigment4-bai6-icon.netlify.app/'; 
+// const apiDomain = 'https://assigment4-bai6-icon.netlify.app/'; 
 // const apiDomain = 'http://localhost:4174'; 
+// src/main.js
+// Thay vì dùng cố định http://localhost:4174, hãy dùng window.location.origin để tự động bắt đúng domain khi deploy
+const apiDomain = typeof window !== 'undefined' ? window.location.origin : '';
 
 // Tải cấu hình chi tiết của bản đồ cố định 'hcm-map' và render Leaflet
 async function loadMapConfig() {

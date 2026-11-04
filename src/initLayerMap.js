@@ -41,8 +41,13 @@ export function initLayerSwitcherMap(options = {}) {
 
   // Biến lưu trữ layer highlight hiện tại
   let highlightLayer = null;
-  const apiDomain = 'http://localhost:4174'; // Domain của SvelteKit server
+  // const apiDomain = 'http://localhost:4174'; // Domain của SvelteKit server
 
+  // initLayerMap.js
+  // Đổi thành dynamic theo domain thực tế khi chạy trên trình duyệt
+  const apiDomain = typeof window !== 'undefined' ? window.location.origin : '';
+
+  
   // 2. Dựng khung HTML cho Menu điều khiển & Nút Định vị
   const controlParent = document.getElementById(controlPanelId);
   if (controlParent) {
@@ -76,7 +81,7 @@ export function initLayerSwitcherMap(options = {}) {
 
       div.className = `flex items-center gap-2 p-1 cursor-pointer rounded hover:bg-gray-50 transition-all 
         ${isActive ? 'bg-blue-50/50 border-2 border-blue-500' : 'border-2 border-transparent'}`;
-      
+
       const imageSrc = item.iconUrl || item.thumbnailUrl || '';
 
       div.innerHTML = `
@@ -196,7 +201,7 @@ export function initLayerSwitcherMap(options = {}) {
         return;
       }
       locateBtn.textContent = '⏳ Đang xác định vị trí...';
-      
+
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const lat = position.coords.latitude;
@@ -266,7 +271,7 @@ export function initLayerSwitcherMap(options = {}) {
             }
 
             popupContent += `<hr style="margin: 6px 0; border-top: 1px solid #e5e7eb;"/><strong style="color: #2563eb; font-size: 12px;">${item.name}</strong><br/>`;
-            
+
             const props = data.features[0].properties;
             if (props && Object.keys(props).length > 0) {
               let propsHtml = '<table style="width:100%; font-size:11px; margin-top: 4px; border-collapse: collapse;">';
