@@ -14,7 +14,7 @@ L.Icon.Default.mergeOptions({
 export function initLayerSwitcherMap(options = {}) {
   const {
     mapContainerId = 'map',
-    controlPanelId = 'map-control', // Thẻ cha duy nhất trong HTML để chứa toàn bộ Menu
+    controlPanelId = 'map-control',
     centerCoordinates = [10.780074, 106.6876522],
     zoom = 8,
     markerInfo = {
@@ -39,7 +39,11 @@ export function initLayerSwitcherMap(options = {}) {
     L.marker(markerInfo.coords).bindPopup(markerInfo.popupText).addTo(map);
   }
 
-  // 2. DỰNG KHUNG HTML CHO MENU ĐIỀU KHIỂN (Đã loại bỏ dropdown chọn khu vực)
+  // Biến lưu trữ layer highlight hiện tại
+  let highlightLayer = null;
+  const apiDomain = 'http://localhost:4174'; // Domain của SvelteKit server
+
+  // 2. Dựng khung HTML cho Menu điều khiển & Nút Định vị
   const controlParent = document.getElementById(controlPanelId);
   if (controlParent) {
     controlParent.innerHTML = `
@@ -50,9 +54,14 @@ export function initLayerSwitcherMap(options = {}) {
         <div class="font-bold mb-1 text-gray-500">Lớp phủ</div>
         <div id="overlay-container" class="flex flex-col gap-1"></div>
       </div>
+
+      <div class="border-t border-gray-400 pt-2 mt-3">
+        <div class="font-bold mb-1 text-gray-500">Công cụ</div>
+        <button id="locate-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold py-2 px-3 rounded shadow transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+          📍 Định vị vị trí của tôi
+        </button>
+      </div>
     `;
-  } else {
-    console.warn(`Không tìm thấy thẻ #${controlPanelId}, sẽ tìm thẻ #basemap-container và #overlay-container có sẵn.`);
   }
 
   const basemapContainer = document.getElementById('basemap-container');
@@ -61,7 +70,6 @@ export function initLayerSwitcherMap(options = {}) {
   // 3. Render Lớp Nền (Base Layers)
   if (basemapContainer) {
     basemapContainer.innerHTML = '';
-
     baseLayerData.forEach((item) => {
       const div = document.createElement('div');
       const isActive = item.defaultOn;
@@ -86,9 +94,7 @@ export function initLayerSwitcherMap(options = {}) {
 
       div.addEventListener('click', () => {
         baseLayerData.forEach(b => {
-          if (map.hasLayer(b.layer)) {
-            map.removeLayer(b.layer);
-          }
+          if (map.hasLayer(b.layer)) map.removeLayer(b.layer);
         });
 
         currentLayer = item.layer;
@@ -98,13 +104,14 @@ export function initLayerSwitcherMap(options = {}) {
         basemapContainer.querySelectorAll('div').forEach(el => {
           el.className = "flex items-center gap-2 p-1 cursor-pointer rounded hover:bg-gray-50 border-2 border-transparent transition-all";
         });
-
         div.className = "flex items-center gap-2 p-1 cursor-pointer rounded hover:bg-gray-50 border-2 border-blue-500 bg-blue-50/50 transition-all";
       });
     });
   }
 
   // 4. Render Lớp Phủ (Overlays)
+  const overlayLayersMap = new Map();
+
   if (overlayContainer) {
     overlayContainer.innerHTML = '';
 
@@ -121,6 +128,14 @@ export function initLayerSwitcherMap(options = {}) {
         wmsLayer.addTo(map);
       }
 
+      overlayLayersMap.set(item.id.trim(), {
+        layer: wmsLayer,
+        id: item.id.trim(),
+        name: item.name,
+        url: item.url,
+        active: item.defaultOn
+      });
+
       const div = document.createElement('div');
       div.className = "flex items-center gap-2 p-1 hover:bg-gray-50 rounded cursor-pointer";
       div.innerHTML = `
@@ -133,14 +148,176 @@ export function initLayerSwitcherMap(options = {}) {
 
       const checkbox = div.querySelector(`#overlay-${index}`);
       checkbox.addEventListener('change', (e) => {
+        const overlayData = overlayLayersMap.get(item.id.trim());
         if (e.target.checked) {
           map.addLayer(wmsLayer);
+          if (overlayData) overlayData.active = true;
         } else {
           map.removeLayer(wmsLayer);
+          if (overlayData) overlayData.active = false;
         }
       });
     });
   }
+
+  // 5. Hiển thị tọa độ con chuột theo thời gian thực
+  const mapContainer = document.getElementById(mapContainerId) || map.getContainer();
+  let coordsDiv = document.getElementById('map-mouse-coords');
+
+  if (!coordsDiv && mapContainer) {
+    if (window.getComputedStyle(mapContainer).position === 'static') {
+      mapContainer.style.position = 'relative';
+    }
+
+    coordsDiv = document.createElement('div');
+    coordsDiv.id = 'map-mouse-coords';
+    mapContainer.appendChild(coordsDiv);
+  }
+
+  if (coordsDiv) {
+    coordsDiv.className = 'map-mouse-coords';
+    coordsDiv.textContent = 'Lat: --.----- | Long: --.-----';
+  }
+
+  map.on('mousemove', (e) => {
+    if (coordsDiv) {
+      const lat = e.latlng.lat.toFixed(5);
+      const lng = e.latlng.lng.toFixed(5);
+      coordsDiv.textContent = `Lat: ${lat} | Long: ${lng}`;
+    }
+  });
+
+  // 6. Định vị vị trí người dùng (Geolocation)
+  const locateBtn = document.getElementById('locate-btn');
+  if (locateBtn) {
+    locateBtn.addEventListener('click', () => {
+      if (!navigator.geolocation) {
+        alert('Trình duyệt của bạn không hỗ trợ định vị GPS.');
+        return;
+      }
+      locateBtn.textContent = '⏳ Đang xác định vị trí...';
+      
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          locateBtn.textContent = '📍 Định vị vị trí của tôi';
+          map.setView([lat, lng], 16);
+          L.marker([lat, lng]).addTo(map).bindPopup('<b>📍 Vị trí hiện tại của bạn</b>').openPopup();
+        },
+        () => {
+          locateBtn.textContent = '📍 Định vị vị trí của tôi';
+          alert('Không thể lấy được vị trí. Vui lòng cấp quyền truy cập vị trí.');
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
+      );
+    });
+  }
+
+  // 7. GetFeatureInfo kết hợp Highlight đối tượng bằng GeoJSON khi Click
+  map.on('click', async (e) => {
+    const activeOverlays = Array.from(overlayLayersMap.values()).filter(item => map.hasLayer(item.layer));
+    if (activeOverlays.length === 0) return;
+
+    if (highlightLayer) {
+      map.removeLayer(highlightLayer);
+      highlightLayer = null;
+    }
+
+    const point = map.latLngToContainerPoint(e.latlng, map.getZoom());
+    const size = map.getSize();
+    const bounds = map.getBounds();
+    const sw = bounds.getSouthWest();
+    const ne = bounds.getNorthEast();
+    const bbox = `${sw.lng},${sw.lat},${ne.lng},${ne.lat}`;
+
+    let popupContent = `<div style="max-height: 240px; overflow-y: auto; font-size: 11px; padding-right: 4px;"><b>Thông tin đối tượng:</b><br/>`;
+    let hasContent = false;
+    let firstGeometry = null;
+
+    for (const item of activeOverlays) {
+      const wmsGetFeatureInfoUrl = `${item.url}?` + new URLSearchParams({
+        service: 'WMS',
+        version: '1.1.0',
+        request: 'GetFeatureInfo',
+        layers: item.id,
+        query_layers: item.id,
+        styles: '',
+        bbox: bbox,
+        width: size.x,
+        height: size.y,
+        x: Math.round(point.x),
+        y: Math.round(point.y),
+        info_format: 'application/json'
+      });
+
+      const proxyUrl = `${apiDomain}/api/proxy?url=` + encodeURIComponent(wmsGetFeatureInfoUrl);
+
+      try {
+        const response = await fetch(proxyUrl);
+        const contentType = response.headers.get('content-type') || '';
+
+        if (contentType.includes('application/json')) {
+          const data = await response.json();
+          if (data && data.features && data.features.length > 0) {
+            hasContent = true;
+            if (!firstGeometry && data.features[0].geometry) {
+              firstGeometry = data.features[0];
+            }
+
+            popupContent += `<hr style="margin: 6px 0; border-top: 1px solid #e5e7eb;"/><strong style="color: #2563eb; font-size: 12px;">${item.name}</strong><br/>`;
+            
+            const props = data.features[0].properties;
+            if (props && Object.keys(props).length > 0) {
+              let propsHtml = '<table style="width:100%; font-size:11px; margin-top: 4px; border-collapse: collapse;">';
+              for (const [key, val] of Object.entries(props)) {
+                if (val !== null && val !== undefined && val !== '') {
+                  propsHtml += `<tr style="border-bottom: 1px solid #f3f4f6;"><td style="font-weight:bold; padding: 3px 6px 3px 0; color: #374151; width: 35%;">${key}:</td><td style="padding: 3px 0; color: #1f2937; word-break: break-word;">${val}</td></tr>`;
+                }
+              }
+              propsHtml += '</table>';
+              popupContent += propsHtml;
+            } else {
+              popupContent += `<i style="color: #6b7280; font-size: 10px;">Không có thuộc tính chi tiết cho đối tượng này.</i>`;
+            }
+          }
+        }
+      } catch (err) {
+        console.warn(`Lỗi khi lấy GetFeatureInfo cho lớp ${item.name}:`, err);
+      }
+    }
+
+    popupContent += `</div>`;
+
+    if (firstGeometry) {
+      highlightLayer = L.geoJSON(firstGeometry, {
+        style: {
+          color: '#ef4444',
+          weight: 4,
+          opacity: 0.9,
+          fillColor: '#fde047',
+          fillOpacity: 0.4
+        },
+        pointToLayer: function (feature, latlng) {
+          return L.circleMarker(latlng, {
+            radius: 8,
+            fillColor: '#ef4444',
+            color: '#ffffff',
+            weight: 2,
+            opacity: 1,
+            fillOpacity: 0.9
+          });
+        }
+      }).addTo(map);
+    }
+
+    if (hasContent) {
+      L.popup()
+        .setLatLng(e.latlng)
+        .setContent(popupContent)
+        .openOn(map);
+    }
+  });
 
   return map;
 }
