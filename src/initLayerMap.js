@@ -11,6 +11,16 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
 
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, char => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  })[char]);
+}
+
 export function initLayerSwitcherMap(options = {}) {
   const {
     mapContainerId = 'map',
@@ -192,6 +202,26 @@ export function initLayerSwitcherMap(options = {}) {
     }
   });
 
+  const infoPanel = document.createElement('section');
+  infoPanel.className = 'map-feature-info';
+  infoPanel.hidden = true;
+  infoPanel.setAttribute('aria-label', 'Thông tin đối tượng');
+  infoPanel.innerHTML = `
+    <div class="map-feature-info__header">
+      <strong>Thông tin đối tượng</strong>
+      <button class="map-feature-info__close" type="button" aria-label="Đóng thông tin">&times;</button>
+    </div>
+    <div class="map-feature-info__content"></div>
+  `;
+  mapContainer.appendChild(infoPanel);
+  L.DomEvent.disableClickPropagation(infoPanel);
+  L.DomEvent.disableScrollPropagation(infoPanel);
+
+  const infoContent = infoPanel.querySelector('.map-feature-info__content');
+  infoPanel.querySelector('.map-feature-info__close').addEventListener('click', () => {
+    infoPanel.hidden = true;
+  });
+
   // 6. Định vị vị trí người dùng (Geolocation)
   const locateBtn = document.getElementById('locate-btn');
   if (locateBtn) {
@@ -236,7 +266,7 @@ export function initLayerSwitcherMap(options = {}) {
     const ne = bounds.getNorthEast();
     const bbox = `${sw.lng},${sw.lat},${ne.lng},${ne.lat}`;
 
-    let popupContent = `<div style="max-height: 240px; overflow-y: auto; font-size: 11px; padding-right: 4px;"><b>Thông tin đối tượng:</b><br/>`;
+    let panelContent = '';
     let hasContent = false;
     let firstGeometry = null;
 
@@ -270,29 +300,28 @@ export function initLayerSwitcherMap(options = {}) {
               firstGeometry = data.features[0];
             }
 
-            popupContent += `<hr style="margin: 6px 0; border-top: 1px solid #e5e7eb;"/><strong style="color: #2563eb; font-size: 12px;">${item.name}</strong><br/>`;
+            panelContent += `<section class="map-feature-info__layer"><strong>${escapeHtml(item.name)}</strong>`;
 
             const props = data.features[0].properties;
             if (props && Object.keys(props).length > 0) {
-              let propsHtml = '<table style="width:100%; font-size:11px; margin-top: 4px; border-collapse: collapse;">';
+              let propsHtml = '<table><tbody>';
               for (const [key, val] of Object.entries(props)) {
                 if (val !== null && val !== undefined && val !== '') {
-                  propsHtml += `<tr style="border-bottom: 1px solid #f3f4f6;"><td style="font-weight:bold; padding: 3px 6px 3px 0; color: #374151; width: 35%;">${key}:</td><td style="padding: 3px 0; color: #1f2937; word-break: break-word;">${val}</td></tr>`;
+                  propsHtml += `<tr><th>${escapeHtml(key)}</th><td>${escapeHtml(val)}</td></tr>`;
                 }
               }
-              propsHtml += '</table>';
-              popupContent += propsHtml;
+              propsHtml += '</tbody></table>';
+              panelContent += propsHtml;
             } else {
-              popupContent += `<i style="color: #6b7280; font-size: 10px;">Không có thuộc tính chi tiết cho đối tượng này.</i>`;
+              panelContent += '<p class="map-feature-info__empty">Không có thuộc tính chi tiết cho đối tượng này.</p>';
             }
+            panelContent += '</section>';
           }
         }
       } catch (err) {
         console.warn(`Lỗi khi lấy GetFeatureInfo cho lớp ${item.name}:`, err);
       }
     }
-
-    popupContent += `</div>`;
 
     if (firstGeometry) {
       highlightLayer = L.geoJSON(firstGeometry, {
@@ -317,10 +346,8 @@ export function initLayerSwitcherMap(options = {}) {
     }
 
     if (hasContent) {
-      L.popup()
-        .setLatLng(e.latlng)
-        .setContent(popupContent)
-        .openOn(map);
+      infoContent.innerHTML = panelContent;
+      infoPanel.hidden = false;
     }
   });
 
